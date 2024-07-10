@@ -5,6 +5,15 @@
 * Add `#cover` that allows one to resize an image to cover a given width and height without cropping
   the excess. (@brendon)
 
+* **BREAKING CHANGE**: Update to MiniMagick v5 (@RIPAGlobal). If you use GraphicsMagick,
+  `MiniMagick.cli = :graphicsmagick` must be changed to:
+
+  ```rb
+  MiniMagick.configure do |config|
+    config.cli_prefix = "gm"
+  end
+  ```
+
 ## 1.12.2 (2022-03-01)
 
 * Prevent remote shell execution when using `#apply` with operations coming from user input (@janko)

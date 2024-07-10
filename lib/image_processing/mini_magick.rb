@@ -7,7 +7,7 @@ module ImageProcessing
 
     # Returns whether the given image file is processable.
     def self.valid_image?(file)
-      ::MiniMagick::Tool::Convert.new do |convert|
+      ::MiniMagick.convert do |convert|
         convert << file.path
         convert << "null:"
       end
@@ -30,7 +30,7 @@ module ImageProcessing
           magick = path_or_magick
         else
           source_path = path_or_magick
-          magick = ::MiniMagick::Tool::Convert.new
+          magick = ::MiniMagick.convert
 
           Utils.apply_options(magick, **options)
 

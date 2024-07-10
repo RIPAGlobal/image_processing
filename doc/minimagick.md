@@ -62,13 +62,17 @@ processed #=> #<Tempfile:/var/folders/.../image_processing20180316-18446-1j247h6
 
 ### GraphicsMagick
 
-The MiniMagick gem supports [GraphicsMagick] as well, you just need to specify
-that you want to use it:
+The MiniMagick gem can support [GraphicsMagick], you just need to configure it
+and specify that you want to use it:
 
 ```rb
-require "image_processing/mini_magick"
+MiniMagick.configure do |config|
+  config.cli_prefix = "gm"
+end
 
-MiniMagick.cli = :graphicsmagick
+# ...
+
+require "image_processing/mini_magick"
 
 processed = ImageProcessing::MiniMagick
   .source(image)
@@ -78,6 +82,11 @@ processed = ImageProcessing::MiniMagick
 
 processed #=> #<Tempfile:/var/folders/.../image_processing20180316-18446-1j247h6.png>
 ```
+
+...but if you do this, please check the "Backwards Compatibility" section of
+the MiniMagick version 5.0.0
+[release notes](https://github.com/minimagick/minimagick/releases/tag/v5.0.0)
+to understand some of the implications.
 
 ## Methods
 
@@ -314,7 +323,7 @@ ImageProcessing::MiniMagick
 
 #### `#method_missing`
 
-Any unknown methods will be delegated to [`MiniMagick::Tool::Convert`]. See the
+Any unknown methods will be delegated to [`MiniMagick.convert`]. See the
 list of all available options by running `convert -help` and visiting the
 [ImageMagick reference].
 
@@ -329,10 +338,10 @@ ImageProcessing::MiniMagick
 
 #### `#custom`
 
-Yields the intermediary `MiniMagick::Tool::Convert` object. If the block return
-value is a `MiniMagick::Tool::Convert` object it will be used in further
-processing, otherwise if `nil` is returned the original
-`MiniMagick::Tool::Convert` object will be used.
+Yields the intermediary `MiniMagick.convert` instance. If the block return
+value is a `MiniMagick.convert` object then it will be used in further
+processing, otherwise if `nil` is returned the original `MiniMagick.convert`
+ object will be used.
 
 ```rb
 ImageProcessing::MiniMagick
@@ -407,7 +416,7 @@ If you would like to have more control over loading, you can create the
 `MiniMagick::Tool` object directly, and just pass it as the source file.
 
 ```rb
-magick = MiniMagick::Tool::Convert.new
+magick = MiniMagick.convert
 magick << "..." << "..." << "..."
 
 ImageProcessing::MiniMagick
@@ -454,7 +463,7 @@ magick = ImageProcessing::MiniMagick
   .resize_to_limit(400, 400)
   .call(save: false)
 
-magick #=> #<MiniMagick::Tool::Convert ...>
+magick #=> #<MiniMagick::Tool ...>
 
 magick << "output.png"
 magick.call
@@ -520,7 +529,7 @@ ImageProcessing::MiniMagick
 [direction]: https://www.imagemagick.org/script/command-line-options.php#gravity
 [color]: https://www.imagemagick.org/script/color.php
 [ImageMagick reference]: https://www.imagemagick.org/script/command-line-options.php
-[`MiniMagick::Tool::Convert`]: https://github.com/minimagick/minimagick#metal
+[`MiniMagick.convert`]: https://github.com/minimagick/minimagick#tools
 [Reading JPEG Control Options]: http://www.imagemagick.org/Usage/formats/#jpg_read
 [Writing JPEG Control Options]: http://www.imagemagick.org/Usage/formats/#jpg_write
 [`-limit`]: https://www.imagemagick.org/script/command-line-options.php#limit
