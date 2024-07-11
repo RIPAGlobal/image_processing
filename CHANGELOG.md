@@ -5,14 +5,32 @@
 * Add `#cover` that allows one to resize an image to cover a given width and height without cropping
   the excess. (@brendon)
 
-* **BREAKING CHANGE**: Update to MiniMagick v5 (@RIPAGlobal). If you use GraphicsMagick,
-  `MiniMagick.cli = :graphicsmagick` must be changed to:
+* **BREAKING CHANGE**: Update to MiniMagick v5 (@RIPAGlobal). That gem version
+  says GraphicsMagick "isn't officially supported". It claims that this:
+
+  ```ruby
+    MiniMagick.cli = :graphicsmagick
+  ```
+
+  ...must be changed to:
 
   ```rb
   MiniMagick.configure do |config|
     config.cli_prefix = "gm"
   end
   ```
+
+  ...this does *not seem to work* and, without changes to the GraphicsMagick
+  code, does not look like it ever will. Sadly, GraphicsMagick support has to
+  be considered now dropped in this version of this gem as a result.
+
+  There will be other issues arising from this major version change; consult
+  the [MiniMagick change log](https://github.com/minimagick/minimagick/releases)
+  for details. Examples include using the `strip` option in a pipeline call to
+  `#saver(...)`; previously `strip: false` or `strip: nil` *would still* strip
+  EXIF data, confusingly; this instead now results in an error, as the arising
+  `+strip` CLI option is now rejected by ImageMagick. Replace such uses of
+  `false` or `nil` with `true` to resolve this.
 
 ## 1.12.2 (2022-03-01)
 
